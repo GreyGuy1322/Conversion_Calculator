@@ -4,26 +4,294 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unit Conversion Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            opacity: 0.1;
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-size: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        #convertButton {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #convertButton:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        #quitButton {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        #quitButton:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: rgba(76, 201, 240, 0.1);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--success-color);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .conversion-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Unit Conversion Calculator</h1>
-        <p>Select a conversion type:</p>
-        <select id="conversionType">
-            <option value="">--Select Conversion--</option>
-            <option value="kmToMiles">Kilometers to Miles</option>
-            <option value="inchesToFeet">Inches to Feet</option>
-            <option value="cmToInches">Centimeters to Inches</option>
-            <option value="poundsToKgs">Pounds to Kilograms</option>
-            <option value="inchesToMeters">Inches to Meters</option>
-        </select>
-        <input type="number" id="inputValue" placeholder="Enter value" />
-        <button id="convertButton">Convert</button>
+        
+        <div class="input-group">
+            <label for="conversionType">Conversion Type</label>
+            <select id="conversionType">
+                <option value="">-- Select Conversion --</option>
+                <option value="kmToMiles">Kilometers to Miles</option>
+                <option value="inchesToFeet">Inches to Feet</option>
+                <option value="cmToInches">Centimeters to Inches</option>
+                <option value="poundsToKgs">Pounds to Kilograms</option>
+                <option value="inchesToMeters">Inches to Meters</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="inputValue">Value to Convert</label>
+            <input type="number" id="inputValue" placeholder="Enter value">
+        </div>
+        
+        <div class="button-group">
+            <button id="convertButton">
+                <span class="conversion-icon">⇄</span> Convert
+            </button>
+            <button id="quitButton">
+                <span class="conversion-icon">✕</span> Quit
+            </button>
+        </div>
+        
         <div id="result" class="result"></div>
-        <button id="quitButton">Quit</button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        document.getElementById('convertButton').addEventListener('click', function() {
+            const conversionType = document.getElementById('conversionType').value;
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const resultElement = document.getElementById('result');
+            let result;
+
+            if (!conversionType) {
+                resultElement.textContent = "Please select a conversion type.";
+                resultElement.classList.add('show');
+                return;
+            }
+
+            if (isNaN(inputValue)) {
+                resultElement.textContent = "Please enter a valid number.";
+                resultElement.classList.add('show');
+                return;
+            }
+
+            switch (conversionType) {
+                case 'kmToMiles':
+                    result = inputValue * 0.621371;
+                    resultElement.innerHTML = `
+                        <strong>${inputValue} Kilometers</strong> equals 
+                        <strong>${result.toFixed(6)} Miles</strong>
+                    `;
+                    break;
+                case 'inchesToFeet':
+                    result = inputValue * 0.0833333;
+                    resultElement.innerHTML = `
+                        <strong>${inputValue} Inches</strong> equals 
+                        <strong>${result.toFixed(6)} Feet</strong>
+                    `;
+                    break;
+                case 'cmToInches':
+                    result = inputValue * 0.393701;
+                    resultElement.innerHTML = `
+                        <strong>${inputValue} Centimeters</strong> equals 
+                        <strong>${result.toFixed(6)} Inches</strong>
+                    `;
+                    break;
+                case 'poundsToKgs':
+                    result = inputValue * 0.453592;
+                    resultElement.innerHTML = `
+                        <strong>${inputValue} Pounds</strong> equals 
+                        <strong>${result.toFixed(6)} Kilograms</strong>
+                    `;
+                    break;
+                case 'inchesToMeters':
+                    result = inputValue * 0.0254;
+                    resultElement.innerHTML = `
+                        <strong>${inputValue} Inches</strong> equals 
+                        <strong>${result.toFixed(6)} Meters</strong>
+                    `;
+                    break;
+            }
+
+            resultElement.classList.add('show');
+        });
+
+        document.getElementById('quitButton').addEventListener('click', function() {
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = "Thank you for using the conversion calculator!";
+            resultElement.classList.add('show');
+            
+            setTimeout(() => {
+                resultElement.classList.remove('show');
+            }, 3000);
+        });
+    </script>
 </body>
 </html>
