@@ -3,64 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit Converter</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Unit Conversion Calculator</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="converter-box">
-        <h1>🧮 Unit Converter</h1>
-        <label for="conversion-type">Choose Conversion:</label>
-        <select id="conversion-type">
-            <option value="km-miles">Kilometers ➡️ Miles</option>
-            <option value="inch-foot">Inches ➡️ Foot</option>
-            <option value="cm-inch">Centimeters ➡️ Inches</option>
-            <option value="pound-kg">Pounds ➡️ Kilograms</option>
-            <option value="inch-meter">Inches ➡️ Meters</option>
+    <div class="container">
+        <h1>Unit Conversion Calculator</h1>
+        <p>Select a conversion type:</p>
+        <select id="conversionType">
+            <option value="">--Select Conversion--</option>
+            <option value="kmToMiles">Kilometers to Miles</option>
+            <option value="inchesToFeet">Inches to Feet</option>
+            <option value="cmToInches">Centimeters to Inches</option>
+            <option value="poundsToKgs">Pounds to Kilograms</option>
+            <option value="inchesToMeters">Inches to Meters</option>
         </select>
-
-        <label for="input-value">Enter Value:</label>
-        <input type="number" id="input-value" placeholder="Enter number">
-
-        <button onclick="convert()">Convert</button>
-
-        <div class="result" id="result">Result will appear here.</div>
+        <input type="number" id="inputValue" placeholder="Enter value" />
+        <button id="convertButton">Convert</button>
+        <div id="result" class="result"></div>
+        <button id="quitButton">Quit</button>
     </div>
 
-    <script>
-        function convert() {
-            let type = document.getElementById("conversion-type").value;
-            let input = parseFloat(document.getElementById("input-value").value);
-            let output;
-            if (isNaN(input)) {
-                document.getElementById("result").innerText = "❗ Please enter a valid number.";
-                return;
-            }
-
-            switch (type) {
-                case "km-miles":
-                    output = input * 0.62137119;
-                    document.getElementById("result").innerText = `${input} Km = ${output.toFixed(4)} Miles`;
-                    break;
-                case "inch-foot":
-                    output = input * 0.08333333;
-                    document.getElementById("result").innerText = `${input} Inches = ${output.toFixed(4)} Feet`;
-                    break;
-                case "cm-inch":
-                    output = input * 0.39370079;
-                    document.getElementById("result").innerText = `${input} Cm = ${output.toFixed(4)} Inches`;
-                    break;
-                case "pound-kg":
-                    output = input * 0.45359237;
-                    document.getElementById("result").innerText = `${input} Pounds = ${output.toFixed(4)} Kg`;
-                    break;
-                case "inch-meter":
-                    output = input * 0.0254;
-                    document.getElementById("result").innerText = `${input} Inches = ${output.toFixed(4)} Meters`;
-                    break;
-                default:
-                    document.getElementById("result").innerText = "❗ Invalid conversion type.";
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
